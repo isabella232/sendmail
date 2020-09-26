@@ -3,15 +3,15 @@
 %% File   : sendmail.erl
 %% Author : Klacke <klacke@hyber.org>,
 %%          Johan Bevemyr <jb@son.bevemyr.com>,
-%%          Håkan Stenholm <hokan@klarna.com>,
+%%          HÃ¥kan Stenholm <hokan@klarna.com>,
 %%          Richard Carlsson <richardc@klarna.com>
 %%
 %% Description : send mail using local sendmail; based on sendmail.erl
 %% by Klacke and smtp.erl by Johan Bevemyr, with code for RFC1522 by
-%% Håkan Stenholm. Major cleanup and rewrites by Richard Carlsson.
+%% HÃ¥kan Stenholm. Major cleanup and rewrites by Richard Carlsson.
 %%
 %% Copyright (C) Johan Bevemyr 2004, Klacke <klacke@hyber.org> 2005,
-%% Håkan Stenholm 2009, Richard Carlsson 2009.
+%%  2009, Richard Carlsson 2009.
 %%
 %% Permission is hereby granted, free of charge, to any person obtaining a
 %% copy of this software and associated documentation files (the
@@ -186,14 +186,14 @@ mk_boundary() ->
 
 %% Make an arbitrary (IO-) string safe to pass into a shell command.
 %% Note that single quotes in the string are dropped.
-%% (Perhaps they should be translated to '' ?) 
+%% (Perhaps they should be translated to '' ?)
 shell_quote(String) ->
     %% 1. Put single quotes around the string.
     "'" ++
 	%% 2. Remove any single quote
 	[C || C <- lists:flatten(String), C =/= $'  % ' emacs
-	   ] 
-	++ "'". 
+	   ]
+	++ "'".
 
 
 %% * See RFC1522 for detail about encoding non-us-ascii in mail headers.
@@ -230,7 +230,7 @@ mk_text_header(Title, Content) ->
     Head = "=?" ++ Charset ++ "?Q?",
     %% ":" would be ok according to RFC822, but ": " seams more common
     %% when looking at email examples and eml files
-    FirstHead = Title ++ ": " ++ Head, 
+    FirstHead = Title ++ ": " ++ Head,
     Tail = "?=",
     Text = q_encode_latin1(Content),
 
@@ -239,37 +239,37 @@ mk_text_header(Title, Content) ->
     %% 1 is added for LWSP from ?CONT on line no. 2+.
     %% Counting NL on final line ensures that lines don't get too long
     %% between fields
-    HTLen = length(Head) + 1 + length(Tail) + length(?NL), 
-    FTLen = length(FirstHead) + length(Tail) + length(?NL), 
+    HTLen = length(Head) + 1 + length(Tail) + length(?NL),
+    FTLen = length(FirstHead) + length(Tail) + length(?NL),
 
-    FirstHead ++ mk_text_header(FirstHead, Head, Tail, Text, 
+    FirstHead ++ mk_text_header(FirstHead, Head, Tail, Text,
                                           HTLen, FTLen, FTLen).
 
-mk_text_header(_FirstHead, _Head, Tail, [] = _Text, 
+mk_text_header(_FirstHead, _Head, Tail, [] = _Text,
                          _HTLen, _FTLen, _Len) ->
     %% no more text
     Tail;
-mk_text_header(done = FirstHead, Head, Tail, [C|R] = Text, 
+mk_text_header(done = FirstHead, Head, Tail, [C|R] = Text,
                          HTLen, FTLen, Len) ->
     %% 2:nd+ line
     %% can we fit another (encode) letter on this line?
     NewLen = Len + length(C),
     case NewLen > ?MAX_LENGTH of
-	false -> C ++ 
+	false -> C ++
 		     mk_text_header(FirstHead, Head, Tail, R,
 					      HTLen, FTLen, NewLen);
 	%% C must be placed on new line
-	true -> Tail ++ ?CONT ++ Head ++ 
-		    mk_text_header(FirstHead, Head, Tail, Text, 
+	true -> Tail ++ ?CONT ++ Head ++
+		    mk_text_header(FirstHead, Head, Tail, Text,
 					     HTLen, FTLen, HTLen)
     end;
-mk_text_header(FirstHead, Head, Tail, [C|R] = Text, 
+mk_text_header(FirstHead, Head, Tail, [C|R] = Text,
                          HTLen, FTLen, Len) ->
     %% 1:st line
     %% can we fit another (encode) letter on this line?
     NewLen = Len + length(C),
     case NewLen > ?MAX_LENGTH of
-	false -> C ++ 
+	false -> C ++
 		     mk_text_header(FirstHead, Head, Tail, R,
 					      HTLen, FTLen, NewLen);
 	%% C must be placed on new line
@@ -295,7 +295,7 @@ q_encode_latin1(Str) ->
 		    %% NOTE: this list may be unnecessarily restrictive
 
 		    %% don't qhex-encode "standard us-ascii" letters
-		    C when 
+		    C when
 		    ((C >= $a) and (C =< $z)) or
 		    ((C >= $A) and (C =< $Z)) or
 		    ((C >= $0) and (C =< $9)) -> [C];
@@ -323,7 +323,7 @@ mk_text_header_test_() ->
     [
      %% based on Thunderbird output
      ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6?=",
-                   mk_text_header("Subject", "åäö")),
+                   mk_text_header("Subject", "ï¿½ï¿½ï¿½")),
 
      ?_assertEqual(
         "Subject: =?ISO-8859-1?Q?=E5=E4=F6twequiiiirrrweyqruyqitrrqw"
@@ -334,30 +334,30 @@ mk_text_header_test_() ->
         "uitr?=",
         mk_text_header(
           "Subject",
-          "åäötwequiiiirrrweyqruyqitrrqw"
+          "ï¿½ï¿½ï¿½twequiiiirrrweyqruyqitrrqw"
           "eruitwqeeerwqeurtwuietrriqweeeeeqeiuurrrrrrrweuiqtruiwetriwee"
           "eeyiirrrrrrrrrrrrruiweqtrweertweuitr")),
-     
+
      %% based on RFC 1522
      %%   =  S?  ?  _  =  =  S?  S_
      ?_assertEqual("XXX: =?ISO-8859-1?Q?=3D_=3F=3F=5F=3D=3D_=3F_=5F?=",
                    mk_text_header("XXX", "= ??_== ? _")),
-     
+
      ?_assertEqual("XXX: ",
                    mk_text_header("XXX", "")),
-     
+
      %% 1 char on new line
      ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6twequ"
                    "iiiirrrweyqruyqitrrqweruitwqeeerwqe?=\n"
                    " =?ISO-8859-1?Q?u?=",
                    mk_text_header(
                      "Subject",
-                     "åäötwequiiiirrrweyqruyqitrrqweruitwqeeerwqeu")),
-     
+                     "ï¿½ï¿½ï¿½twequiiiirrrweyqruyqitrrqweruitwqeeerwqeu")),
+
      %% fits on 1 line
      ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6twequ"
                    "iiiirrrweyqruyqitrrqweruitwqeeerwqe?=",
                    mk_text_header(
                      "Subject",
-                     "åäötwequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
+                     "ï¿½ï¿½ï¿½twequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
     ].
