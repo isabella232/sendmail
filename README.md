@@ -28,11 +28,67 @@ It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with co
 
 ## Features [&#x219F;](#contents)
 
-* TBD
+* Create email payloads
+* Send email payloads
+* Send message (wraps payload creation and sending)
 
 ## Using `sendmail` [&#x219F;](#contents)
 
-TDB
+### New API
+
+The new API just uses a map. Create a message:
+
+```erlang
+1> Data = sendmail:create(#{
+           to => "alice@example.com",
+           from => "bob@example.com",
+           subject => "Hey, Alice!",
+           message => "Where's Carol?"}).
+```
+```erlang
+["Subject: =?ISO-8859-1?Q?Hey=2C_Alice=21?=\n",
+ "From: alice@example.com\n","To: bob@example.com\n",
+ ["Content-Type: text/plain\n",
+  "Content-Transfer-Encoding: 8bit\n","\n","Where's Carol?"]]
+```
+
+Send a message:
+
+```erlang
+2> {ExitCode, CmdOutput} = sendmail:send(#{
+           to => "alice@example.com",
+           from => "bob@example.com",
+           subject => "Hey, Alice!",
+           message => "Where's Carol?"}).
+```
+```erlang
+{0,[]}
+```
+
+### Old API
+
+Create a payload:
+
+```erlang
+3> Data = sendmail:create("alice@example.com", "bob@example.com", "Hey, Alice!",
+      "Where's Carol?").
+```
+```erlang
+["Subject: =?ISO-8859-1?Q?Hey=2C_Alice=21?=\n",
+ "From: alice@example.com\n","To: bob@example.com\n",
+ ["Content-Type: text/plain\n",
+  "Content-Transfer-Encoding: 8bit\n","\n","Where's Carol?"]]
+```
+
+Send a message directly:
+
+```erlang
+4> {ExitCode, CmdOutput} = sendmail:send("alice@example.com", "bob@example.com",
+      "Hey, Alice!", "Where's Carol?").
+```
+```erlang
+{0,[]}
+```
 
 ## License [&#x219F;](#contents)
 
@@ -45,6 +101,8 @@ Copyright © 2005, Klacke <klacke@hyber.org>
 Copyright © 2009, Håkan Stenholm
 
 Copyright © 2009, Richard Carlsson
+
+Copyright © 2020, Duncan McGreggor
 
 <!-- Named page links below: /-->
 
