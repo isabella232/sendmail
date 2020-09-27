@@ -332,16 +332,14 @@ to_hex_char(N) when N >= 10, N =< 15 -> N + $A - 10.
 mk_text_header_test_() ->
     [
      %% based on Thunderbird output
-     ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6?=",
+     ?_assertEqual("Subject: =?ISO-8859-1?Q?=EF=BF=BD=EF=BF=BD=EF=BF=BD?=",
                    mk_text_header("Subject", "���")),
 
      ?_assertEqual(
-        "Subject: =?ISO-8859-1?Q?=E5=E4=F6twequiiiirrrweyqruyqitrrqw"
-        "eruitwqeeerwqe?=\n"
-        " =?ISO-8859-1?Q?urtwuietrriqweeeeeqeiu"
-        "urrrrrrrweuiqtruiwetriweeeeyiirrrrr?=\n"
-        " =?ISO-8859-1?Q?rrrrrrrruiweqtrweertwe"
-        "uitr?=",
+        "Subject: =?ISO-8859-1?Q?=EF=BF=BD=EF=BF=BD=EF=BF=BD"
+        "twequiiiirrrweyqruyqit?=\n =?ISO-8859-1?Q?rrqweruitwqeeerwqeu"
+        "rtwuietrriqweeeeeqeiuurrrrrrrweuiqtrui?=\n"
+        " =?ISO-8859-1?Q?wetriweeeeyiirrrrrrrrrrrrruiweqtrweertweuitr?=",
         mk_text_header(
           "Subject",
           "���twequiiiirrrweyqruyqitrrqw"
@@ -357,16 +355,17 @@ mk_text_header_test_() ->
                    mk_text_header("XXX", "")),
 
      %% 1 char on new line
-     ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6twequ"
-                   "iiiirrrweyqruyqitrrqweruitwqeeerwqe?=\n"
-                   " =?ISO-8859-1?Q?u?=",
+     ?_assertEqual("Subject: =?ISO-8859-1?Q?=EF=BF=BD=EF=BF=BD=EF=BF=BD"
+                   "twequiiiirrrweyqruyqit?=\n"
+                   " =?ISO-8859-1?Q?rrqweruitwqeeerwqeu?=",
                    mk_text_header(
                      "Subject",
                      "���twequiiiirrrweyqruyqitrrqweruitwqeeerwqeu")),
 
      %% fits on 1 line
-     ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6twequ"
-                   "iiiirrrweyqruyqitrrqweruitwqeeerwqe?=",
+     ?_assertEqual("Subject: =?ISO-8859-1?Q?=EF=BF=BD=EF=BF=BD=EF=BF=BD"
+                   "twequiiiirrrweyqruyqit?=\n"
+                   " =?ISO-8859-1?Q?rrqweruitwqeeerwqe?=",
                    mk_text_header(
                      "Subject",
                      "���twequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
