@@ -32,8 +32,7 @@ It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with co
 ## Features [&#x219F;](#contents)
 
 * Create email payloads
-* Send email payloads
-* Send message (wraps payload creation and sending)
+* Send messages
 
 ## Using `sendmail` [&#x219F;](#contents)
 
