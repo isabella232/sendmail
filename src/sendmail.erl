@@ -191,7 +191,7 @@ attachments(Boundary, [FileName|Rest]) when is_list(FileName) ->
     end.
 
 mk_boundary() ->
-    {N1, N2, N3} = now(),
+    {N1, N2, N3} = erlang:timestamp(),
     lists:flatten(io_lib:format("[~w:~w:~w]", [N1, N2, N3])).
 
 %% Make an arbitrary (IO-) string safe to pass into a shell command.

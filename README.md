@@ -20,11 +20,11 @@
 
 This is a fork of Richard Carlsson's project, packaged so that it's easily useable in Erlang/LFE release-based projects.
 
-It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with code for RFC1522 by `Håkan Stenholm`. Major cleanup and rewrites by Richard Carlsson.
+It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with code for RFC1522 by `Håkan Stenholm`. Major cleanup and rewrites by Richard Carlsson. Single argument-as-map support added by Duncan McGreggor (as well as some test and deprecation message cleanups).
 
 ## Dependencies [&#x219F;](#contents)
 
-* Erlang must be installed (only versions 19 and above are tested).
+* Erlang must be installed (only versions 19 and above are tested; due to the use of `timestamp` instead of the deprecated `now` function, versions of Erlang older than 18 will not be able to use the latest release).
 * `sendmail` must be installed and is expected to be at `/usr/sbin/sendmail`.
 
 `rebar3` is not expected or required, but this project is structured according to rebar3 project standards.
