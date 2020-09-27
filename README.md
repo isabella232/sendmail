@@ -24,7 +24,10 @@ It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with co
 
 ## Dependencies [&#x219F;](#contents)
 
-* TBD
+* Erlang must be installed (only versions 19 and above are tested).
+* `sendmail` must be installed and is expected to be at `/usr/sbin/sendmail`.
+
+`rebar3` is not expected or required, but this project is structured according to rebar3 project standards.
 
 ## Features [&#x219F;](#contents)
 
