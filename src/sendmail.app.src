@@ -17,6 +17,7 @@
   %% Hex.pm metadata
   {pkg_name, sendmail},
   {maintainers, ["Richard Carlsson", "Duncan McGreggor"]},
+  {licenses, ["BSD-3"]},
   {links,
    [{"GitHub", "https://github.com/erlsci/sendmail"}
    ]}
