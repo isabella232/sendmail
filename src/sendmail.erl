@@ -4,14 +4,17 @@
 %% Author : Klacke <klacke@hyber.org>,
 %%          Johan Bevemyr <jb@son.bevemyr.com>,
 %%          Håkan Stenholm <hokan@klarna.com>,
-%%          Richard Carlsson <richardc@klarna.com>
+%%          Richard Carlsson <richardc@klarna.com>,
+%%          Duncan McGreggor <oubiwann@gmail.com>
 %%
 %% Description : send mail using local sendmail; based on sendmail.erl
 %% by Klacke and smtp.erl by Johan Bevemyr, with code for RFC1522 by
 %% Håkan Stenholm. Major cleanup and rewrites by Richard Carlsson.
+%% Single argument-as-map support added by Duncan McGreggor (as well as
+%% some test and deprecation message cleanups).
 %%
 %% Copyright (C) Johan Bevemyr 2004, Klacke <klacke@hyber.org> 2005,
-%%  2009, Richard Carlsson 2009.
+%%  2009, Richard Carlsson 2009, Duncan McGreggor 2020.
 %%
 %% Permission is hereby granted, free of charge, to any person obtaining a
 %% copy of this software and associated documentation files (the
@@ -36,12 +39,14 @@
 
 -module(sendmail).
 
--export([ create/4
-        , create/5
-        , send/4
-        , send/5
-        , send_data/3
-        , send_data/4
+-export([create/1,
+         create/4,
+         create/5,
+         send/1,
+         send/4,
+         send/5,
+         send_data/3,
+         send_data/4
         ]).
 
 -include_lib("eunit/include/eunit.hrl").
@@ -49,12 +54,17 @@
 -define(NL, "\n").    % unix sendmail expects LF-terminated lines
 
 %% API
+create(#{ to := To, from := From, subject := Subject, message := Message }) ->
+    create(To, From, Subject, Message, []).
 
 create(To, From, Subject, Message) ->
     create(To, From, Subject, Message, []).
 
 create(To, From, Subject, Message, Opts) ->
     data(To, From, Subject, Message, Opts).
+
+send(#{ to := To, from := From, subject := Subject, message := Message }) ->
+    send(To, From, Subject, Message, []).
 
 send(To, From, Subject, Message) ->
     send(To, From, Subject, Message, []).
