@@ -8,10 +8,11 @@
 %%          Duncan McGreggor <oubiwann@gmail.com>
 %%
 %% Description : send mail using local sendmail; based on sendmail.erl
-%% by Klacke and smtp.erl by Johan Bevemyr, with code for RFC1522 by
-%% Håkan Stenholm. Major cleanup and rewrites by Richard Carlsson.
+%% by Klacke (call that v0.1.0) and smtp.erl by Johan Bevemyr (call that
+%% v0.2.0), with code for RFC1522 by Håkan Stenholm (call that v0.3.0).
+%% Major cleanup and rewrites by Richard Carlsson (call that v0.4.0).
 %% Single argument-as-map support added by Duncan McGreggor (as well as
-%% some test and deprecation message cleanups).
+%% some test and deprecation message cleanups; thus begins v0.5.0).
 %%
 %% Copyright (C) Johan Bevemyr 2004, Klacke <klacke@hyber.org> 2005,
 %%  2009, Richard Carlsson 2009, Duncan McGreggor 2020.
