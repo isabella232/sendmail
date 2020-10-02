@@ -36,6 +36,14 @@ It is based on `sendmail.erl` by Klacke and `smtp.erl` by Johan Bevemyr, with co
 
 ## Using `sendmail` [&#x219F;](#contents)
 
+### `rebar.config` [&#x219F;](#contents)
+
+```erlang
+{deps, [
+  {sendmail, {git, "https://github.com/erlsci/sendmail", {tag, "0.5.1"}}}
+]}.
+```
+
 ### New API
 
 The new API just uses a map. Create a message:
@@ -67,7 +75,7 @@ Send a message:
 {0,[]}
 ```
 
-Support for bracketed email addresses:
+Support for bracketed (RFC 822) email addresses:
 
 ```erlang
 2> {ExitCode, CmdOutput} = sendmail:send(#{
