@@ -102,7 +102,7 @@ port_cmd(From, ExtraOpts) ->
     %% sendmail options used:
     %%   -f  : set envelope sender (can only be done by trusted user)
     %%   -bm : message on stdin
-    "/usr/sbin/sendmail -bm -f " ++ From ++ " " ++ ExtraOpts.
+    "/usr/sbin/sendmail -bm -f '" ++ From ++ "' " ++ ExtraOpts.
 
 sendmail_1(PortCmd, Data) ->
     %% TODO: use spawn_executable to avoid need for shell quote
@@ -210,8 +210,10 @@ shell_quote(String) ->
 %% * See RFC1522 for detail about encoding non-us-ascii in mail headers.
 %% * RFC822 specifies the header layout in greater detail.
 
-mk_header(_Key, []) -> [];
-mk_header(Key, Val) -> Key ++ ": " ++ Val ++ ?NL.
+mk_header(_Key, []) ->
+    [];
+mk_header(Key, Val) ->
+    io_lib:format("~s: ~s~s", [Key, Val, ?NL]).
 
 -define(CONT, (?NL ++ " ")). % continues field on new line
 -define(MAX_LENGTH, 76).     % RFC1522 - max length of line in multiline field
@@ -326,7 +328,6 @@ to_qhex(C) when C >= 0, C =< 255 ->
 to_hex_char(N) when N >=  0, N =<  9 -> N + $0;
 to_hex_char(N) when N >= 10, N =< 15 -> N + $A - 10.
 
-
 %% ------------------------------------------------------------------------
 %% eunit test cases
 
@@ -369,5 +370,13 @@ mk_text_header_test_() ->
                    " =?ISO-8859-1?Q?rrqweruitwqeeerwqe?=",
                    mk_text_header(
                      "Subject",
-                     "���twequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
+                     "���twequiiiirrrweyqruyqitrrqweruitwqeeerwqe")),
+
+    %% simple email addresses
+    ?_assertEqual("To: alice@bob.com\n",
+                  lists:flatten(mk_header("To", "alice@bob.com"))),
+
+    %% friendly email addresses
+    ?_assertEqual("To: \"Alice Roberts <alice@bob.com>\"\n",
+                  lists:flatten(mk_header("To", "\"Alice Roberts <alice@bob.com>\"")))
     ].

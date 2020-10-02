@@ -67,6 +67,19 @@ Send a message:
 {0,[]}
 ```
 
+Support for bracketed email addresses:
+
+```erlang
+2> {ExitCode, CmdOutput} = sendmail:send(#{
+           to => "Alice Roberts <alice@example.com>",
+           from => "Bob Carol <bob@example.com>",
+           subject => "Hey, Alice!",
+           message => "Where's Carol?"}).
+```
+```erlang
+{0,[]}
+```
+
 ### Old API
 
 Create a payload:
